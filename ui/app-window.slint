@@ -1,0 +1,66 @@
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    min-width: 500px;
+    min-height: 500px;
+    callback got_clicked(string);
+
+    in-out property <string> center_text;
+
+    HorizontalBox {
+        alignment: space-between;
+        VerticalBox {
+            alignment: space-between;
+            Button {
+                text: "Top Left";
+                clicked => {
+                    center_text = self.text;
+                    got_clicked(self.text);
+                }
+            }
+
+            Button {
+                text: "Bottom Left";
+                clicked => {
+                    center_text = self.text;
+                    got_clicked(self.text);
+                }
+            }
+        }
+
+        VerticalBox {
+            alignment: center;
+            Button {
+                text: "Center";
+                clicked => {
+                    center_text = self.text;
+                    got_clicked(self.text);
+                }
+            }
+
+            Text {
+                horizontal-alignment: center;
+                text: center_text;
+            }
+        }
+
+        VerticalBox {
+            alignment: space-between;
+            Button {
+                text: "Top Right";
+                clicked => {
+                    center_text = self.text;
+                    got_clicked(self.text);
+                }
+            }
+
+            Button {
+                text: "Bottom Right";
+                clicked => {
+                    center_text = self.text;
+                    got_clicked(self.text);
+                }
+            }
+        }
+    }
+}
