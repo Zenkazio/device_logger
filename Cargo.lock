@@ -6,6 +6,7 @@ version = 4
 name = "SuperTestForAndroid"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "clap",
  "current_platform",
  "serde",
@@ -875,6 +876,7 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
+ "serde",
  "wasm-bindgen",
  "windows-link",
 ]
