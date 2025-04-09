@@ -8,7 +8,8 @@ pub fn client_job() {
     println!("Running: {}\nCompiled: {}", CURRENT_PLATFORM, COMPILED_ON);
 
     let log = log::Log::new();
-
+    log.show();
+    log.to_file();
     comm::send_local(&log.to_json()).unwrap();
     // let ui = AppWindow::new().expect("msg");
 
