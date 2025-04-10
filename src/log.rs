@@ -75,24 +75,6 @@ fn readable_bytes(bytes: u64) -> String {
     format!("{:.2}{}", bytes, suffix[index])
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::log::readable_bytes;
-
-    #[test]
-    fn check_readable_bytes() {
-        assert_eq!(String::from("500B"), readable_bytes(500));
-        assert_eq!(String::from("1023B"), readable_bytes(1023));
-        assert_eq!(String::from("1.00KiB"), readable_bytes(1024));
-        assert_eq!(String::from("1.27KiB"), readable_bytes(1300));
-        assert_eq!(String::from("2.00KiB"), readable_bytes(2048));
-        assert_eq!(String::from("2.50KiB"), readable_bytes(2560));
-        assert_eq!(String::from("1.00MiB"), readable_bytes(1048576));
-        assert_eq!(String::from("2.00MiB"), readable_bytes(2097152));
-        assert_eq!(String::from("1.00GiB"), readable_bytes(1073741824));
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 struct SystemSerDe {
     name: String,
@@ -125,7 +107,6 @@ impl SystemSerDe {
                     },
                 );
             }
-            println!("{:?}", network);
         }
 
         SystemSerDe {
@@ -148,3 +129,19 @@ struct Network {
     ip_network: Vec<IpNetwork>,
 }
 //TODO disks fehlen noch
+#[cfg(test)]
+mod log_tests {
+    use super::readable_bytes;
+    #[test]
+    fn check_readable_bytes() {
+        assert_eq!(String::from("500B"), readable_bytes(500));
+        assert_eq!(String::from("1023B"), readable_bytes(1023));
+        assert_eq!(String::from("1.00KiB"), readable_bytes(1024));
+        assert_eq!(String::from("1.27KiB"), readable_bytes(1300));
+        assert_eq!(String::from("2.00KiB"), readable_bytes(2048));
+        assert_eq!(String::from("2.50KiB"), readable_bytes(2560));
+        assert_eq!(String::from("1.00MiB"), readable_bytes(1048576));
+        assert_eq!(String::from("2.00MiB"), readable_bytes(2097152));
+        assert_eq!(String::from("1.00GiB"), readable_bytes(1073741824));
+    }
+}
