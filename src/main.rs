@@ -9,8 +9,9 @@ mod log;
 mod server;
 
 fn main() {
-    match cli::is_server() {
-        true => server::server_job(),
-        false => client::client_job(),
+    if cli::is_server() {
+        server::server_job();
+    } else {
+        client::client_job();
     }
 }
