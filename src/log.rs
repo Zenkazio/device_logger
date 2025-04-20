@@ -3,7 +3,7 @@ use current_platform::{COMPILED_ON, CURRENT_PLATFORM};
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, to_string_pretty};
 use std::{collections::HashMap, fs, path};
-use sysinfo::{IS_SUPPORTED_SYSTEM, IpNetwork, MacAddr, Networks, System};
+use sysinfo::{Disks, IS_SUPPORTED_SYSTEM, IpNetwork, MacAddr, Networks, System};
 
 #[derive(Serialize, Deserialize)]
 pub struct Log {
@@ -87,13 +87,13 @@ struct SystemSerDe {
     number_cpus: u64,
     brand_cpu: String,
     networks: HashMap<String, Network>,
+    disks: HashMap<String, Disk>,
 }
 
 impl SystemSerDe {
     fn new() -> Self {
         let mut sys = System::new_all();
         sys.refresh_all();
-        //println!("{}", to_string_pretty(&sys).unwrap());
 
         let networks = Networks::new_with_refreshed_list();
         let mut network_hash: HashMap<String, Network> = HashMap::new();
@@ -109,6 +109,19 @@ impl SystemSerDe {
             }
         }
 
+        let mut disk_map: HashMap<String, Disk> = HashMap::new();
+        for disk in Disks::new_with_refreshed_list().list() {
+            disk_map.insert(
+                String::from_utf8_lossy(disk.name().as_encoded_bytes()).to_string(),
+                Disk {
+                    total_space: readable_bytes(disk.total_space()),
+                    avaiable_space: readable_bytes(disk.available_space()),
+                    file_system: String::from_utf8_lossy(disk.file_system().as_encoded_bytes())
+                        .to_string(),
+                    disk_type: disk.kind().to_string(),
+                },
+            );
+        }
         SystemSerDe {
             name: System::name().unwrap(),
             kernel_version: System::kernel_version().unwrap(),
@@ -120,6 +133,7 @@ impl SystemSerDe {
             number_cpus: sys.cpus().len() as u64,
             brand_cpu: sys.cpus().get(0).unwrap().brand().to_string(),
             networks: network_hash,
+            disks: disk_map,
         }
     }
 }
@@ -128,7 +142,14 @@ struct Network {
     mac_address: MacAddr,
     ip_network: Vec<IpNetwork>,
 }
-//TODO disks fehlen noch
+#[derive(Serialize, Deserialize)]
+struct Disk {
+    total_space: String,
+    avaiable_space: String,
+    file_system: String,
+    disk_type: String,
+}
+
 #[cfg(test)]
 mod log_tests {
     use super::readable_bytes;

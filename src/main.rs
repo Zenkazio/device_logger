@@ -10,8 +10,8 @@ mod server;
 
 fn main() {
     if cli::is_server() {
-        server::server_job();
+        server::main();
     } else {
-        client::client_job();
+        client::main();
     }
 }
