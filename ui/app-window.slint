@@ -3,7 +3,10 @@ import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
 export component AppWindow inherits Window {
     min-width: 500px;
     min-height: 500px;
+    in-out property <bool> is_fullscreen: false;
     callback got_clicked(string);
+    callback close();
+    callback go_fullscreen();
 
     in-out property <string> center_text;
 
@@ -16,6 +19,13 @@ export component AppWindow inherits Window {
                 clicked => {
                     center_text = self.text;
                     got_clicked(self.text);
+                }
+            }
+
+            Button {
+                text: "Fullscreen";
+                clicked => {
+                    go_fullscreen();
                 }
             }
 
@@ -41,6 +51,13 @@ export component AppWindow inherits Window {
             Text {
                 horizontal-alignment: center;
                 text: center_text;
+            }
+
+            Button {
+                text: "Close";
+                clicked => {
+                    close();
+                }
             }
         }
 

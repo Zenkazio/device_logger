@@ -60,7 +60,25 @@ impl Log {
         println!("{}", self.to_json());
     }
 }
+trait ReadableBytes {
+    fn to_readable_bytes(self) -> String;
+}
 
+impl ReadableBytes for u64 {
+    fn to_readable_bytes(self) -> String {
+        if self < 1024 {
+            return format!("{}B", self);
+        }
+        let mut bytes = self as f64;
+        let suffix = ["B", "KiB", "MiB", "GiB", "TiB", "EiB"];
+        let mut index = 0;
+        while bytes >= 1024.0 {
+            index += 1;
+            bytes /= 1024.0;
+        }
+        format!("{:.2}{}", bytes, suffix[index])
+    }
+}
 fn readable_bytes(bytes: u64) -> String {
     if bytes < 1024 {
         return format!("{}B", bytes);
@@ -152,10 +170,10 @@ struct Disk {
 
 #[cfg(test)]
 mod log_tests {
-    use super::readable_bytes;
+    use super::*;
     #[test]
     fn check_readable_bytes() {
-        assert_eq!(String::from("500B"), readable_bytes(500));
+        assert_eq!(String::from("500B"), 500_u64.to_readable_bytes());
         assert_eq!(String::from("1023B"), readable_bytes(1023));
         assert_eq!(String::from("1.00KiB"), readable_bytes(1024));
         assert_eq!(String::from("1.27KiB"), readable_bytes(1300));
